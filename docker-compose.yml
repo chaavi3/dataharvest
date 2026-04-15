@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  dataharvest:
+    build: .
+    ports:
+      - "3000:3000"
+      - "8000:8000"
+    volumes:
+      - ./jobs:/app/jobs
+      - ./uploads:/app/uploads
+      - ./config.json:/app/config.json
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
