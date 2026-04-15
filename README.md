@@ -27,7 +27,7 @@ Point DataHarvest at web pages, documents, search results, or Google Drive links
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/yourusername/dataharvest.git
+git clone https://github.com/chaavi3/dataharvest.git
 cd dataharvest
 
 # Backend
