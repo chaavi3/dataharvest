@@ -16,59 +16,121 @@ Point DataHarvest at web pages, documents, search results, or Google Drive links
 - **Settings UI** -- manage API keys, browser config, rate limits, and optional PIN authentication
 - **Schema templates** -- save and reuse column definitions across jobs
 
-## Quick Start
+## Setup Guide (from scratch)
 
-### Prerequisites
+Complete step-by-step instructions for a fresh Windows, macOS, or Linux machine.
 
-- Python 3.11+
-- Node.js 18+
-- A Chromium browser (installed automatically by Playwright)
+### Step 1: Install Python 3.11+
 
-### 1. Clone and install
+- **Windows:** Download from [python.org/downloads](https://www.python.org/downloads/). During installation, **check "Add Python to PATH"**.
+- **macOS:** `brew install python@3.11` (or download from python.org)
+- **Linux:** `sudo apt install python3.11 python3.11-venv python3-pip` (Ubuntu/Debian) or equivalent for your distro.
+
+Verify: open a terminal and run `python --version` (or `python3 --version`). You should see 3.11 or higher.
+
+### Step 2: Install Node.js 18+
+
+- Download the LTS version from [nodejs.org](https://nodejs.org/).
+- On macOS: `brew install node` also works.
+
+Verify: `node --version` and `npm --version`.
+
+### Step 3: Get an LLM API key
+
+You need at least one LLM provider key. Options:
+
+| Provider | Where to get a key | Cost |
+|---|---|---|
+| **OpenAI** (recommended) | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) | Pay-as-you-go; GPT-4o-mini is ~$0.15/M input tokens |
+| **Anthropic Claude** | [console.anthropic.com](https://console.anthropic.com/) | Pay-as-you-go |
+| **Google Gemini** | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | Free tier available |
+| **Ollama** (fully local) | [ollama.com](https://ollama.com/) | Free, no API key needed |
+
+We recommend **setting a spending limit** on your provider account to cap costs.
+
+### Step 4: Clone the repository
 
 ```bash
 git clone https://github.com/chaavi3/dataharvest.git
 cd dataharvest
-
-# Backend
-cd backend
-pip install -r requirements.txt
-playwright install chromium
-cd ..
-
-# Frontend
-cd frontend
-npm install
-cd ..
 ```
 
-### 2. Start the servers
-
-In two terminals:
+### Step 5: Install backend dependencies
 
 ```bash
-# Terminal 1: Backend
+cd backend
+pip install -r requirements.txt
+```
+
+On macOS/Linux you may need `pip3` instead of `pip`. If you prefer an isolated environment:
+
+```bash
+python -m venv .venv
+# Windows:   .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Step 6: Install the Playwright browser
+
+DataHarvest uses Playwright to render web pages in a headless Chromium browser:
+
+```bash
+playwright install chromium
+```
+
+### Step 7: Install frontend dependencies
+
+Open a new terminal (or navigate back to the repo root):
+
+```bash
+cd frontend
+npm install
+```
+
+### Step 8: Start the backend server
+
+From the repo root:
+
+```bash
 cd backend
 uvicorn app.main:app --reload --port 8000
+```
 
-# Terminal 2: Frontend
+Leave this terminal running. You should see output like `Uvicorn running on http://127.0.0.1:8000`.
+
+### Step 9: Start the frontend server
+
+Open a **second terminal** and from the repo root:
+
+```bash
 cd frontend
 npm run dev
 ```
 
-### 3. Open the UI
+Leave this terminal running. You should see output like `ready - started server on http://localhost:3000`.
 
-Visit **http://localhost:3000** in your browser.
+### Step 10: Open the UI and configure API keys
 
-### 4. Configure API keys
+1. Open **http://localhost:3000** in your browser (Chrome, Edge, Firefox, etc.)
+2. Click **Settings**
+3. Enter your LLM provider API key (e.g., your OpenAI key)
+4. Set the **Default Provider** to match (e.g., OpenAI)
+5. Save
 
-Go to **Settings** and enter your LLM provider API key (at minimum, an OpenAI key). Optionally add a SerpAPI key for keyword-based search.
+> **Security note:** API keys are stored in plain text inside `config.json`. This file is gitignored and will not be committed to the repository. **Never commit `config.json` to version control.** See the [Security](#security) section below for details.
 
-> **Security note:** API keys are stored in plain text inside `config.json`. This file is already in `.gitignore` so it will not be committed to the repository. **Never commit `config.json` to version control.** See the [Security](#security) section below for details.
+### Step 11: Create your first job
 
-### 5. Create your first job
+1. Click **New Job**
+2. Choose a source type (e.g., "Single URL" to test with one page)
+3. Define the columns you want extracted (name, description, type)
+4. Preview the results, then run the job
+5. Once complete, click **CSV** (or XLSX/HTML/PDF) to export your data
 
-Click **New Job**, choose a source type, define your columns, preview the results, and run!
+### Stopping the servers
+
+Press `Ctrl+C` in each terminal window to stop the backend and frontend servers.
 
 ## Docker
 
@@ -151,6 +213,10 @@ DataHarvest stores API keys in `config.json` at the project root in **plain text
 | `.env` / `.env.local` | Environment variables (if used) | Yes |
 
 If you fork this repo or create a public copy, double-check that none of these files are included.
+
+## Recipes
+
+The [recipes/](recipes/) folder contains step-by-step guides for specific use cases (e.g., scraping IPL cricket stats, extracting product listings, etc.). See the [recipes README](recipes/README.md) for the full list. Contributions welcome -- add your own and open a PR!
 
 ## Contributing
 
