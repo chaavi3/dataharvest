@@ -64,6 +64,8 @@ Visit **http://localhost:3000** in your browser.
 
 Go to **Settings** and enter your LLM provider API key (at minimum, an OpenAI key). Optionally add a SerpAPI key for keyword-based search.
 
+> **Security note:** API keys are stored in plain text inside `config.json`. This file is already in `.gitignore` so it will not be committed to the repository. **Never commit `config.json` to version control.** See the [Security](#security) section below for details.
+
 ### 5. Create your first job
 
 Click **New Job**, choose a source type, define your columns, preview the results, and run!
@@ -129,6 +131,26 @@ Settings are managed through the web UI (**Settings** page) and stored in `confi
 | HTML | .html, .htm | built-in |
 | Markdown | .md | built-in |
 | CSV | .csv | built-in |
+
+## Security
+
+DataHarvest stores API keys in `config.json` at the project root in **plain text**. This is a local-only tool and the keys never leave your machine (except when calling the LLM provider APIs), but you should be aware of the following:
+
+- **`config.json` is gitignored.** It will not be committed to the repository by default. **Do not remove it from `.gitignore`, and never commit this file.**
+- **Do not share `config.json`.** If you copy or zip the project folder, exclude `config.json` or delete the keys first.
+- **Set a spending limit** on your LLM provider account (e.g., [OpenAI usage limits](https://platform.openai.com/settings/organization/limits)). This caps your exposure even if a key is accidentally leaked.
+- **Rotate keys immediately** if you suspect they have been exposed. All major providers let you revoke and regenerate keys from their dashboard.
+- **Use Ollama for zero-risk local inference.** If you prefer not to use cloud API keys at all, DataHarvest supports [Ollama](https://ollama.com/) for fully local LLM processing.
+
+### Files that may contain secrets
+
+| File | Contains | Gitignored |
+|------|----------|------------|
+| `config.json` | LLM API keys, SerpAPI key | Yes |
+| `jobs/*.json` | Job state (no keys) | Yes |
+| `.env` / `.env.local` | Environment variables (if used) | Yes |
+
+If you fork this repo or create a public copy, double-check that none of these files are included.
 
 ## Contributing
 

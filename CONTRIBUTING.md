@@ -66,6 +66,17 @@ The frontend dev server runs on port 3000 and proxies `/api/*` requests to the b
 2. Update the file accept list in `frontend/src/components/source-input.tsx`
 3. Add the required Python dependency to `requirements.txt`
 
+## Secrets and API Keys
+
+DataHarvest stores API keys in `config.json` at the project root. This file is **gitignored** and must never be committed.
+
+Before pushing any branch or opening a pull request:
+
+1. Run `git diff --cached --name-only` and verify `config.json` is not staged
+2. Never add `config.json`, `.env`, or `schema_templates.json` to a commit
+3. Do not hardcode API keys, tokens, or credentials anywhere in source code
+4. If you accidentally commit a secret, **rotate the key immediately** on your provider's dashboard -- do not assume force-pushing removes the exposure
+
 ## Code Style
 
 - **Python:** Follow PEP 8. Use type hints. Keep functions focused.
